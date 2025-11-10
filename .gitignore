@@ -1,19 +1,26 @@
-data/*
-!data/.gitkeep
+# Runtime data directories
+data/
+
+# Terraform state and runtime files
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
 *.tfplan
+*.tfstate.*
 
-# Context and documentation files
+# Personal configuration files
 terraform.tfvars
 .context.md
+SECURITY_AUDIT.md
 
-# Sensitive configuration files
+# SSL certificates (planned)
 *.pem
 *.key
 *.crt
 *.p12
+*.pfx
+
+# Environment files
 .env
 .env.*
 
@@ -32,3 +39,7 @@ terraform.tfvars
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Logs
+*.log
+logs/
