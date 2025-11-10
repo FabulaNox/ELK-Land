@@ -74,7 +74,7 @@ terraform apply
 ### 3. Access Services
 
 - **Kibana**: http://localhost:5601 (`elastic` / `changeme`)
-- **Elasticsearch**: http://localhost:9200
+- **Elasticsearch**: http://localhost:9200 (`elastic` / `changeme`)
 - **Logstash**: Send syslog to `localhost:1514` (UDP/TCP)
 
 ## ⚙️ Configuration
@@ -126,13 +126,13 @@ logger -n localhost -P 1514 "Test message from logger"
 
 ```bash
 # Check cluster health
-curl http://elastic:changeme@localhost:9200/_cluster/health
+curl http://elastic:<yourpassword>@localhost:9200/_cluster/health
 
 # List indices
-curl http://elastic:changeme@localhost:9200/_cat/indices
+curl http://elastic:<yourpassword>@localhost:9200/_cat/indices
 
 # Search logs
-curl -X GET "elastic:changeme@localhost:9200/syslog-*/_search?q=*"
+curl -X GET "elastic:<yourpassword>@localhost:9200/syslog-*/_search?q=*"
 ```
 
 ### Kibana Setup
@@ -202,7 +202,7 @@ mkdir -p backups/$(date +%Y%m%d)
 sudo cp -r data/elasticsearch backups/$(date +%Y%m%d)/
 
 # Backup Kibana dashboards via API
-curl -X GET "elastic:changeme@localhost:9200/.kibana/_search?pretty" > backups/$(date +%Y%m%d)/kibana-config.json
+curl -X GET "elastic:<password>@localhost:9200/.kibana/_search?pretty" > backups/$(date +%Y%m%d)/kibana-config.json
 ```
 
 ### Clean Deployment
@@ -275,7 +275,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-**Your Name** - your.email@example.com
+**Bogdan Carmaciu** - b.carmaciu@outlook.com
 
 Project Link: [https://github.com/yourusername/ELK-Land](https://github.com/yourusername/ELK-Land)
 
