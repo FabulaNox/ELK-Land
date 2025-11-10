@@ -13,6 +13,7 @@ terraform.tfstate.backup
 terraform.tfvars
 .context.md
 SECURITY_AUDIT.md
+DEPLOYMENT_CONTEXT.md
 
 # SSL certificates (planned)
 *.pem
