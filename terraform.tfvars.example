@@ -1,0 +1,22 @@
+# Example Terraform Variables Configuration
+# Copy this file to terraform.tfvars and customize for your environment
+
+# JVM Configuration
+es_java_opts = "-Xms2g -Xmx2g"  # Elasticsearch heap size
+ls_java_opts = "-Xms1g -Xmx1g"  # Logstash heap size
+
+# Port Configuration
+es_port     = 9200  # Elasticsearch HTTP port
+kibana_port = 5601  # Kibana web interface port
+syslog_port = 1514  # Logstash syslog input port
+
+# Path Configuration (relative to project root)
+es_data_path         = "./data/elasticsearch"
+logstash_data_path   = "./data/logstash"
+kibana_data_path     = "./data/kibana"
+logstash_config_path = "./conf"
+
+# Memory Recommendations:
+# - Development: es_java_opts="-Xms2g -Xmx2g", ls_java_opts="-Xms1g -Xmx1g"
+# - Production:  es_java_opts="-Xms4g -Xmx4g", ls_java_opts="-Xms2g -Xmx2g"
+# - Heavy Load:  es_java_opts="-Xms8g -Xmx8g", ls_java_opts="-Xms4g -Xmx4g"

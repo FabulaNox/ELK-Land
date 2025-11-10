@@ -1,0 +1,9 @@
+data/*
+!data/.gitkeep
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+
+# Context and documentation files
+terraform.tfvars
+.context.md

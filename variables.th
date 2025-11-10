@@ -1,0 +1,11 @@
+variable "es_data_path"      { default = "${path.module}/data/elasticsearch" }
+variable "logstash_data_path"{ default = "${path.module}/data/logstash" }
+variable "kibana_data_path"  { default = "${path.module}/data/kibana" }
+variable "logstash_pipeline_path" { default = "${path.module}/conf/logstash-pipeline.conf" }
+
+variable "es_port"     { default = 9200 }
+variable "kibana_port" { default = 5601 }
+variable "syslog_port" { default = 1514 } # avoids conflict with system rsyslog
+
+variable "es_java_opts" { default = "-Xms2g -Xmx2g" }
+variable "ls_java_opts" { default = "-Xms1g -Xmx1g" }
