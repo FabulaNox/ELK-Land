@@ -49,7 +49,7 @@ resource "docker_container" "elasticsearch" {
 
   mounts {
     target = "/usr/share/elasticsearch/data"
-    source = var.es_data_path
+    source = abspath("data/elasticsearch")
     type   = "bind"
   }
 }
@@ -83,7 +83,7 @@ resource "docker_container" "kibana" {
 
   mounts {
     target = "/usr/share/kibana/data"
-    source = var.kibana_data_path
+    source = abspath("data/kibana")
     type   = "bind"
   }
 
@@ -120,7 +120,7 @@ resource "docker_container" "logstash" {
   # Mount the entire pipeline directory for flexibility
   mounts {
     target = "/usr/share/logstash/pipeline"
-    source = var.logstash_config_path
+    source = abspath("conf")
     type   = "bind"
   }
 

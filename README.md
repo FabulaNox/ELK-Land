@@ -91,11 +91,12 @@ es_port     = 9200
 kibana_port = 5601
 syslog_port = 1514
 
-# Data Persistence Paths
-es_data_path         = "./data/elasticsearch"
-logstash_data_path   = "./data/logstash"
-kibana_data_path     = "./data/kibana"
-logstash_config_path = "./conf"
+# Data Persistence
+# Data is automatically stored in project directories:
+# - ./data/elasticsearch (Elasticsearch data)
+# - ./data/kibana (Kibana data)  
+# - ./data/logstash (Logstash data)
+# - ./conf (Logstash configuration)
 ```
 
 ### Memory Recommendations

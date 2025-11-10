@@ -30,27 +30,27 @@ variable "syslog_port" {
   default     = 1514
 }
 
-# Paths (relative to repo root)
+# Paths (absolute paths required for Docker bind mounts)
 variable "es_data_path" {
   type        = string
-  description = "Path for Elasticsearch data directory"
-  default     = "./data/elasticsearch"
+  description = "Absolute path for Elasticsearch data directory"
+  default     = ""
 }
 
 variable "logstash_data_path" {
   type        = string
-  description = "Path for Logstash data directory"
-  default     = "./data/logstash"
+  description = "Absolute path for Logstash data directory"
+  default     = ""
 }
 
 variable "kibana_data_path" {
   type        = string
-  description = "Path for Kibana data directory"
-  default     = "./data/kibana"
+  description = "Absolute path for Kibana data directory"
+  default     = ""
 }
 
 variable "logstash_config_path" {
   type        = string
-  description = "Path for Logstash configuration directory"
-  default     = "./conf"
+  description = "Absolute path for Logstash configuration directory"
+  default     = ""
 }
