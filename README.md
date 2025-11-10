@@ -57,8 +57,11 @@ Perfect for **portfolios**, **learning environments**, and **small to medium pro
 ```bash
 git clone https://github.com/yourusername/ELK-Land.git
 cd ELK-Land
-cp terraform.tfvars.example terraform.tfvars  # Create from example if needed
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars and CHANGE THE DEFAULT PASSWORD!
 ```
+
+⚠️ **SECURITY WARNING**: Change the `elastic_password` in `terraform.tfvars` before deploying!
 
 ### 2. Deploy the Stack
 
@@ -160,10 +163,10 @@ ELK-Land/
 ## 🔐 Security Considerations
 
 ### Default Credentials
-⚠️ **Change default passwords before production use!**
+⚠️ **Change default passwords after first login!**
 
 - Elasticsearch: `elastic` / `changeme`
-- Update passwords in `conf/logstash-pipeline.conf` and application configs
+- The weak password is intentional - change it via Kibana after deployment
 
 ### Network Security
 - All services isolated in Docker network

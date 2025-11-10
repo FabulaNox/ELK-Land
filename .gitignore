@@ -3,7 +3,32 @@ data/*
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+*.tfplan
 
 # Context and documentation files
 terraform.tfvars
 .context.md
+
+# Sensitive configuration files
+*.pem
+*.key
+*.crt
+*.p12
+.env
+.env.*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
