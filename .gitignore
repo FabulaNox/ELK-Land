@@ -3,6 +3,7 @@ data/
 
 # Terraform state and runtime files
 .terraform/
+.terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
 *.tfplan
@@ -43,3 +44,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Deployment results and container artifacts  
+# No deployment artifacts, runtime data, or container state should be in repository
+# This ensures clean, portable, and secure deployments across environments

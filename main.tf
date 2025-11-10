@@ -5,6 +5,10 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "~> 3.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -27,7 +31,7 @@ resource "docker_container" "elasticsearch" {
   restart = "unless-stopped"
 
   env = [
-    "discovery.type=single-node",
+    "discovery.type=single-node", 
     "ES_JAVA_OPTS=${var.es_java_opts}",
     "xpack.security.enabled=true",
     "ELASTIC_PASSWORD=changeme"
@@ -54,6 +58,26 @@ resource "docker_container" "elasticsearch" {
   }
 }
 
+# Set kibana_system password after Elasticsearch is ready
+resource "null_resource" "setup_kibana_user" {
+  provisioner "local-exec" {
+    command = <<-EOF
+      # Wait for Elasticsearch to be ready
+      until curl -s http://elastic:changeme@localhost:${var.es_port}/_cluster/health > /dev/null; do
+        echo "Waiting for Elasticsearch to be ready..."
+        sleep 5
+      done
+      
+      # Set kibana_system password
+      curl -X POST "http://elastic:changeme@localhost:${var.es_port}/_security/user/kibana_system/_password" \
+           -H "Content-Type: application/json" \
+           -d '{"password": "changeme"}'
+    EOF
+  }
+
+  depends_on = [docker_container.elasticsearch]
+}
+
 # Kibana with RBAC
 resource "docker_image" "kibana" {
   name         = "docker.elastic.co/kibana/kibana:8.15.0"
@@ -67,7 +91,7 @@ resource "docker_container" "kibana" {
 
   env = [
     "ELASTICSEARCH_HOSTS=http://elasticsearch:9200",
-    "ELASTICSEARCH_USERNAME=elastic",
+    "ELASTICSEARCH_USERNAME=kibana_system", 
     "ELASTICSEARCH_PASSWORD=changeme"
   ]
 
@@ -87,7 +111,7 @@ resource "docker_container" "kibana" {
     type   = "bind"
   }
 
-  depends_on = [docker_container.elasticsearch]
+  depends_on = [docker_container.elasticsearch, null_resource.setup_kibana_user]
 }
 
 # Logstash
