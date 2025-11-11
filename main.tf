@@ -14,6 +14,22 @@ terraform {
 
 provider "docker" {}
 
+# Create required directories before starting containers
+resource "null_resource" "create_data_dirs" {
+  provisioner "local-exec" {
+    command = <<-EOF
+      mkdir -p data/elasticsearch
+      mkdir -p data/kibana
+      mkdir -p data/logstash
+      mkdir -p conf
+      # Set proper permissions for Elasticsearch data directory
+      chmod 777 data/elasticsearch
+      chmod 777 data/kibana
+      chmod 777 data/logstash
+    EOF
+  }
+}
+
 # Shared network for ELK stack
 resource "docker_network" "elk" {
   name = "elk_network"
@@ -21,7 +37,7 @@ resource "docker_network" "elk" {
 
 # Elasticsearch with RBAC enabled
 resource "docker_image" "elasticsearch" {
-  name         = "docker.elastic.co/elasticsearch/elasticsearch:8.15.0"
+  name         = "docker.elastic.co/elasticsearch/elasticsearch:${var.elk_version}"
   keep_locally = true
 }
 
@@ -56,6 +72,8 @@ resource "docker_container" "elasticsearch" {
     source = abspath("data/elasticsearch")
     type   = "bind"
   }
+
+  depends_on = [null_resource.create_data_dirs]
 }
 
 # Set kibana_system password after Elasticsearch is ready
@@ -80,7 +98,7 @@ resource "null_resource" "setup_kibana_user" {
 
 # Kibana with RBAC
 resource "docker_image" "kibana" {
-  name         = "docker.elastic.co/kibana/kibana:8.15.0"
+  name         = "docker.elastic.co/kibana/kibana:${var.elk_version}"
   keep_locally = true
 }
 
@@ -91,8 +109,12 @@ resource "docker_container" "kibana" {
 
   env = [
     "ELASTICSEARCH_HOSTS=http://elasticsearch:9200",
-    "ELASTICSEARCH_USERNAME=kibana_system", 
-    "ELASTICSEARCH_PASSWORD=changeme"
+    "ELASTICSEARCH_USERNAME=kibana_system",
+    "ELASTICSEARCH_PASSWORD=${var.kibana_password}",
+    "XPACK_SECURITY_ENCRYPTIONKEY=${var.kibana_encryption_key}",
+    "XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${var.kibana_saved_objects_encryption_key}",
+    "XPACK_REPORTING_ENCRYPTIONKEY=${var.kibana_encryption_key}",
+    "XPACK_FLEET_AGENTS_ELASTICSEARCH_HOSTS=[\"http://elasticsearch:9200\"]"
   ]
 
   ports {
@@ -111,12 +133,12 @@ resource "docker_container" "kibana" {
     type   = "bind"
   }
 
-  depends_on = [docker_container.elasticsearch, null_resource.setup_kibana_user]
+  depends_on = [docker_container.elasticsearch, null_resource.setup_kibana_user, null_resource.create_data_dirs]
 }
 
 # Logstash
 resource "docker_image" "logstash" {
-  name         = "docker.elastic.co/logstash/logstash:8.15.0"
+  name         = "docker.elastic.co/logstash/logstash:${var.elk_version}"
   keep_locally = true
 }
 
@@ -152,5 +174,5 @@ resource "docker_container" "logstash" {
     "LS_JAVA_OPTS=${var.ls_java_opts}"
   ]
 
-  depends_on = [docker_container.elasticsearch]
+  depends_on = [docker_container.elasticsearch, null_resource.create_data_dirs]
 }
