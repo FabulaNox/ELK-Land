@@ -110,11 +110,7 @@ resource "docker_container" "kibana" {
   env = [
     "ELASTICSEARCH_HOSTS=http://elasticsearch:9200",
     "ELASTICSEARCH_USERNAME=kibana_system",
-    "ELASTICSEARCH_PASSWORD=${var.kibana_password}",
-    "XPACK_SECURITY_ENCRYPTIONKEY=${var.kibana_encryption_key}",
-    "XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${var.kibana_saved_objects_encryption_key}",
-    "XPACK_REPORTING_ENCRYPTIONKEY=${var.kibana_encryption_key}",
-    "XPACK_FLEET_AGENTS_ELASTICSEARCH_HOSTS=[\"http://elasticsearch:9200\"]"
+    "ELASTICSEARCH_PASSWORD=${var.kibana_password}"
   ]
 
   ports {

@@ -11,6 +11,7 @@ terraform.tfstate.backup
 
 # Personal configuration files
 terraform.tfvars
+local.tfvars
 .context.md
 SECURITY_AUDIT.md
 DEPLOYMENT_CONTEXT.md

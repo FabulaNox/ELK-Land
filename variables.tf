@@ -59,7 +59,7 @@ variable "logstash_config_path" {
 variable "elk_version" {
   type        = string
   description = "ELK stack Docker image version to deploy (elasticsearch/kibana/logstash)"
-  default     = "9.2.0"
+  default     = "8.15.0"
 }
 
 # Security Configuration
@@ -74,20 +74,5 @@ variable "kibana_password" {
   type        = string
   description = "Password for the kibana_system user"
   default     = "changeme"
-  sensitive   = true
-}
-
-# Kibana encryption keys for Fleet and saved objects
-variable "kibana_encryption_key" {
-  type        = string
-  description = "Encryption key for Kibana (32 characters)"
-  default     = "a-32-character-long-encryption-key"
-  sensitive   = true
-}
-
-variable "kibana_saved_objects_encryption_key" {
-  type        = string
-  description = "Encryption key for Kibana saved objects (32+ characters)"
-  default     = "a-32-character-long-encryption-key-for-saved-objects-12345"
   sensitive   = true
 }
