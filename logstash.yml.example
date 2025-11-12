@@ -1,0 +1,25 @@
+# Logstash Configuration Settings - Portfolio Optimized
+# This file configures Logstash system settings for clean, professional operation
+
+# API settings (using new syntax to avoid deprecation warnings)
+api.http.host: "0.0.0.0"
+api.http.port: 9600
+
+# Monitoring settings - disable X-Pack monitoring to avoid license warnings
+xpack.monitoring.enabled: false
+
+# Pipeline settings for optimal performance
+pipeline.workers: 4
+pipeline.batch.size: 125
+pipeline.batch.delay: 50
+
+# Pipeline buffer type - set to avoid deprecation warnings
+pipeline.buffer.type: "heap"
+
+# Log settings to reduce noise in production
+log.level: warn
+slowlog.threshold.warn: 2s
+slowlog.threshold.info: 1s
+
+# Path settings
+path.logs: /usr/share/logstash/logs

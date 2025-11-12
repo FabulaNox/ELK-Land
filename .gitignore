@@ -12,7 +12,13 @@ terraform.tfstate.backup
 # Personal configuration files
 terraform.tfvars
 local.tfvars
+# Development artifacts and self-reporting files
 .context.md
+SECURITY_ISSUES.md
+STATUS.md
+DEPLOYMENT.md
+CLEAN_DEPLOY_COMMANDS.md
+scrapbook/
 SECURITY_AUDIT.md
 DEPLOYMENT_CONTEXT.md
 
@@ -85,6 +91,19 @@ registry/
 .filebeat/
 .metricbeat/
 .packetbeat/
+
+# MikroTik sensitive configuration
+mikrotik-*.conf
+router-*.conf
+*-private.conf
+network-topology.conf
+
+# Personal/environment-specific configuration
+*-private.conf
+*.local
+logstash.yml
+
+# Use logstash.yml.example as template and copy to logstash.yml for deployment
 
 # Deployment results and container artifacts  
 # No deployment artifacts, runtime data, or container state should be in repository

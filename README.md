@@ -77,6 +77,24 @@ terraform apply
 - **Elasticsearch**: http://localhost:9200 (`elastic` / `changeme`)
 - **Logstash**: Send syslog to `localhost:1514` (UDP/TCP)
 
+### 4. MikroTik Configuration (Optional)
+
+If you have MikroTik routers, configure syslog forwarding:
+
+```routeros
+# Configure syslog forwarding to your ELK server
+/system logging action
+add name="elk-remote" remote=YOUR_ELK_SERVER_IP:1514 target=remote
+
+# Enable logging for different topics
+/system logging
+add action=elk-remote topics=firewall
+add action=elk-remote topics=dhcp,info
+add action=elk-remote topics=system,info
+```
+
+**Note**: The Logstash configuration automatically detects common private network ranges. Adjust the regex in `conf/logstash-pipeline.conf` if needed.
+
 ## ⚙️ Configuration
 
 ### Environment Variables (`terraform.tfvars`)

@@ -166,6 +166,13 @@ resource "docker_container" "logstash" {
     type   = "bind"
   }
 
+  # Mount custom logstash.yml to eliminate warnings
+  mounts {
+    target = "/usr/share/logstash/config/logstash.yml"
+    source = abspath("logstash.yml")
+    type   = "bind"
+  }
+
   env = [
     "LS_JAVA_OPTS=${var.ls_java_opts}"
   ]
