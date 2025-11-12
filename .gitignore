@@ -47,6 +47,45 @@ Thumbs.db
 *.log
 logs/
 
+# Beats and monitoring configuration (generated/runtime files)
+beats-config/
+elastic-agent*/
+*.pid
+*.lock
+
+# Working project files - Beat configurations
+*beat.yml
+*beat.yaml
+metricbeat.yml
+filebeat.yml
+packetbeat.yml
+heartbeat.yml
+auditbeat.yml
+winlogbeat.yml
+functionbeat.yml
+
+# Docker Compose files for monitoring stack
+docker-compose*.yml
+docker-compose*.yaml
+
+# Deployment scripts (auto-generated)
+deploy-*.sh
+setup-*.sh
+install-*.sh
+
+# Fleet and Elastic Agent runtime
+fleet-server*/
+elastic-agent-*/
+agent.yml
+agent.yaml
+
+# Beats data and registry files
+*.dat
+registry/
+.filebeat/
+.metricbeat/
+.packetbeat/
+
 # Deployment results and container artifacts  
 # No deployment artifacts, runtime data, or container state should be in repository
 # This ensures clean, portable, and secure deployments across environments
