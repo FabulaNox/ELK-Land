@@ -108,3 +108,9 @@ logstash.yml
 # Deployment results and container artifacts  
 # No deployment artifacts, runtime data, or container state should be in repository
 # This ensures clean, portable, and secure deployments across environments
+
+# Maintenance and cleanup scripts (not deployment scope)
+*cleanup*
+*maintenance*
+admin-*
+
