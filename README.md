@@ -77,23 +77,25 @@ terraform apply
 - **Elasticsearch**: http://localhost:9200 (`elastic` / `changeme`)
 - **Logstash**: Send syslog to `localhost:1514` (UDP/TCP)
 
-### 4. MikroTik Configuration (Optional)
+### 4. Network Device Configuration (Optional)
 
-If you have MikroTik routers, configure syslog forwarding:
+Configure syslog forwarding from your network devices:
 
-```routeros
-# Configure syslog forwarding to your ELK server
-/system logging action
-add name="elk-remote" remote=YOUR_ELK_SERVER_IP:1514 target=remote
+**For devices with topic-based structured logging:**
 
-# Enable logging for different topics
-/system logging
-add action=elk-remote topics=firewall
-add action=elk-remote topics=dhcp,info
-add action=elk-remote topics=system,info
+```bash
+# Configure syslog forwarding to your ELK server  
+# Example format: topic1,topic2,level message_content
+# Remote syslog destination: YOUR_ELK_SERVER_IP:1514
+
+# Enable logging for different topics (adjust for your device)
+# Examples: system,firewall,interface,bridge,etc.
+# device_logging add facility=system remote_server=YOUR_ELK_SERVER_IP:1514
+# device_logging add facility=firewall remote_server=YOUR_ELK_SERVER_IP:1514  
+# device_logging add facility=interface remote_server=YOUR_ELK_SERVER_IP:1514
 ```
 
-**Note**: The Logstash configuration automatically detects common private network ranges. Adjust the regex in `conf/logstash-pipeline.conf` if needed.
+**Note**: The Logstash configuration automatically detects topic-based syslog formats. Adjust the patterns in `conf/logstash.conf` for your specific device format.
 
 ## ⚙️ Configuration
 
@@ -310,12 +312,13 @@ data/, logs/, build/, node_modules/, vendor/
 4. **Document changes** - Update examples when changing configurations
 5. **Test locally** - Validate changes before deployment
 
-### RouterOS Security
-When integrating with MikroTik RouterOS devices:
+### Network Device Security
+When integrating network devices:
 - Use dedicated service accounts with minimal privileges
 - Enable log encryption in transit where possible
-- Filter sensitive log data before ingestion
+- Filter sensitive log data before ingestion  
 - Implement proper network segmentation for logging traffic
+- Sanitize logs to avoid exposing internal topology details
 
 ## 🤝 Contributing
 
