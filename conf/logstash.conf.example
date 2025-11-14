@@ -10,15 +10,15 @@ input {
 }
 
 filter {
-  # RouterOS log format: topic1,topic2,level message_content
+  # Structured syslog format: topic1,topic2,level message_content
   # Example: "bridge,stp,debug ether5 tx bpdu..."
   grok {
-    match => { "message" => "(?<topics_raw>\\w+(?:,\\w+)*),(?<log_level>\\w+)\\s+(?<mikrotik_message>.*)" }
+    match => { "message" => "(?<topics_raw>\\w+(?:,\\w+)*),(?<log_level>\\w+)\\s+(?<log_message>.*)" }
     ecs_compatibility => "v1"
     tag_on_failure => ["_grokparsefailure"]
   }
   
-  # Extract RouterOS topics and level
+  # Extract syslog topics and level
   if [topics_raw] {
     mutate {
       split => { "topics_raw" => "," }
@@ -26,13 +26,13 @@ filter {
     }
   }
   
-  # Detect RouterOS logs and parse topics
+  # Detect structured syslog and parse topics
   if [topics_raw] {
-    # Mark as RouterOS log
+    # Mark as structured syslog
     mutate {
       add_field => { 
-        "log_type" => "routeros"
-        "data_source" => "mikrotik_router"
+        "log_type" => "structured_syslog"
+        "data_source" => "network_device"
       }
     }
     
@@ -47,7 +47,7 @@ filter {
     # Bridge/STP events
     if [log_facility] == "bridge" {
       grok {
-        match => { "mikrotik_message" => "(?<interface>\\w+)\\s+(?<direction>tx|rx)\\s+(?<packet_type>\\w+)" }
+        match => { "log_message" => "(?<interface>\\w+)\\s+(?<direction>tx|rx)\\s+(?<packet_type>\\w+)" }
         ecs_compatibility => "v1"
       }
       mutate {
@@ -73,29 +73,29 @@ filter {
 }
 
 output {
-  # RouterOS-optimized indices for easy querying
-  if [log_type] == "routeros" {
+  # Network device logs with structured indices
+  if [log_type] == "structured_syslog" {
     elasticsearch {
       hosts => ["http://elasticsearch:9200"]
-      index => "routeros-%{+YYYY.MM.dd}"
-      user => "elastic"
-      password => "changeme"
+      index => "network-logs-%{+YYYY.MM.dd}"
+      user => "${ELASTIC_USERNAME:elastic}"
+      password => "${ELASTIC_PASSWORD}"
       manage_template => false
-      template_name => "routeros"
+      template_name => "network-logs"
     }
   } else {
     elasticsearch {
       hosts => ["http://elasticsearch:9200"]
       index => "syslog-%{+YYYY.MM.dd}"
       user => "elastic"
-      password => "changeme"
+      password => "${ELASTIC_PASSWORD}"
       manage_template => false
       template_name => "syslog"
     }
   }
   
-  # Debug output for RouterOS logs
-  if [log_type] == "routeros" {
+  # Debug output for structured syslog
+  if [log_type] == "structured_syslog" {
     stdout {
       codec => rubydebug {
         metadata => false

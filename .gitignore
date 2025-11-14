@@ -161,7 +161,10 @@ registry/
 .winlogbeat/
 
 # Network and router configuration (sensitive)
-mikrotik-*.conf
+# Network device specific configurations (vendor-specific)
+network-device-*.conf
+device-*.conf
+router-*.conf
 router-*.conf
 network-topology.conf
 firewall-*.conf
