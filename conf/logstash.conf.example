@@ -1,0 +1,105 @@
+input {
+  udp {
+    port => 1514
+    type => "syslog"
+  }
+  tcp {
+    port => 1514
+    type => "syslog"
+  }
+}
+
+filter {
+  # RouterOS log format: topic1,topic2,level message_content
+  # Example: "bridge,stp,debug ether5 tx bpdu..."
+  grok {
+    match => { "message" => "(?<topics_raw>\\w+(?:,\\w+)*),(?<log_level>\\w+)\\s+(?<mikrotik_message>.*)" }
+    ecs_compatibility => "v1"
+    tag_on_failure => ["_grokparsefailure"]
+  }
+  
+  # Extract RouterOS topics and level
+  if [topics_raw] {
+    mutate {
+      split => { "topics_raw" => "," }
+      add_field => { "topics" => "%{topics_raw}" }
+    }
+  }
+  
+  # Detect RouterOS logs and parse topics
+  if [topics_raw] {
+    # Mark as RouterOS log
+    mutate {
+      add_field => { 
+        "log_type" => "routeros"
+        "data_source" => "mikrotik_router"
+      }
+    }
+    
+    # Extract facility (first topic)
+    if [topics_raw][0] {
+      mutate { add_field => { "log_facility" => "%{[topics_raw][0]}" } }
+    }
+    if [topics_raw][1] {
+      mutate { add_field => { "log_subsystem" => "%{[topics_raw][1]}" } }
+    }
+    
+    # Bridge/STP events
+    if [log_facility] == "bridge" {
+      grok {
+        match => { "mikrotik_message" => "(?<interface>\\w+)\\s+(?<direction>tx|rx)\\s+(?<packet_type>\\w+)" }
+        ecs_compatibility => "v1"
+      }
+      mutate {
+        add_field => { "event_type" => "bridge_protocol" }
+      }
+    }
+    
+    # Firewall events
+    if "firewall" in [topics_raw] {
+      mutate {
+        add_field => { "event_type" => "firewall" }
+      }
+    }
+  }
+  
+  # General enrichment
+  mutate {
+    add_field => { 
+      "ingestion_timestamp" => "%{@timestamp}"
+      "data_pipeline" => "logstash_enhanced"
+    }
+  }
+}
+
+output {
+  # RouterOS-optimized indices for easy querying
+  if [log_type] == "routeros" {
+    elasticsearch {
+      hosts => ["http://elasticsearch:9200"]
+      index => "routeros-%{+YYYY.MM.dd}"
+      user => "elastic"
+      password => "changeme"
+      manage_template => false
+      template_name => "routeros"
+    }
+  } else {
+    elasticsearch {
+      hosts => ["http://elasticsearch:9200"]
+      index => "syslog-%{+YYYY.MM.dd}"
+      user => "elastic"
+      password => "changeme"
+      manage_template => false
+      template_name => "syslog"
+    }
+  }
+  
+  # Debug output for RouterOS logs
+  if [log_type] == "routeros" {
+    stdout {
+      codec => rubydebug {
+        metadata => false
+      }
+    }
+  }
+}

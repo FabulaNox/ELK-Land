@@ -12,6 +12,34 @@ terraform.tfstate.backup
 # Personal configuration files
 terraform.tfvars
 local.tfvars
+
+# Development and testing files
+test-*
+*test*
+testing/
+tests/
+spec/
+*.spec.js
+*.spec.ts
+*.test.js
+*.test.ts
+debug-*
+*debug*
+debugging/
+temp-*
+tmp-*
+scratch-*
+*scratch*
+sample-*
+*sample*
+demo-*
+*demo*
+mock-*
+*mock*
+dev-*
+*dev*
+development/
+
 # Development artifacts and self-reporting files
 .context.md
 SECURITY_ISSUES.md
@@ -22,16 +50,37 @@ scrapbook/
 SECURITY_AUDIT.md
 DEPLOYMENT_CONTEXT.md
 
-# SSL certificates (planned)
+# Configuration files with sensitive data
+*.conf
+!*.conf.example
+!*.conf.template
+!conf/logstash.conf
+!conf/pipeline.conf
+config/
+configs/
+secrets/
+private/
+sensitive/
+
+# SSL certificates and cryptographic material
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
+*.cer
+*.der
+*.jks
+*.keystore
+*.truststore
+ca-*
+cert-*
+private-key-*
 
 # Environment files
 .env
 .env.*
+!.env.example
 
 # IDE and editor files
 .vscode/
@@ -39,6 +88,11 @@ DEPLOYMENT_CONTEXT.md
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
 
 # OS generated files
 .DS_Store
@@ -49,17 +103,18 @@ DEPLOYMENT_CONTEXT.md
 ehthumbs.db
 Thumbs.db
 
-# Logs
+# Logs and monitoring
 *.log
 logs/
+monitoring/
 
-# Beats and monitoring configuration (generated/runtime files)
+# Beats and Elastic Agent configuration (use examples)
 beats-config/
 elastic-agent*/
 *.pid
 *.lock
 
-# Working project files - Beat configurations
+# Working project files - Beat configurations (use templates)
 *beat.yml
 *beat.yaml
 metricbeat.yml
@@ -69,21 +124,31 @@ heartbeat.yml
 auditbeat.yml
 winlogbeat.yml
 functionbeat.yml
+!*beat.yml.example
+!*beat.yml.template
 
-# Docker Compose files for monitoring stack
+# Docker Compose override files
 docker-compose*.yml
 docker-compose*.yaml
+!docker-compose.yml.example
+!docker-compose.yml.template
 
-# Deployment scripts (auto-generated)
+# Deployment and automation scripts (use templates)
 deploy-*.sh
 setup-*.sh
 install-*.sh
+start-*.sh
+stop-*.sh
+restart-*.sh
+!*.sh.example
+!*.sh.template
 
 # Fleet and Elastic Agent runtime
 fleet-server*/
 elastic-agent-*/
 agent.yml
 agent.yaml
+!agent.yml.example
 
 # Beats data and registry files
 *.dat
@@ -91,26 +156,74 @@ registry/
 .filebeat/
 .metricbeat/
 .packetbeat/
+.heartbeat/
+.auditbeat/
+.winlogbeat/
 
-# MikroTik sensitive configuration
+# Network and router configuration (sensitive)
 mikrotik-*.conf
 router-*.conf
-*-private.conf
 network-topology.conf
+firewall-*.conf
+vpn-*.conf
+*-private.conf
+*-secret.conf
+*-credentials.*
 
 # Personal/environment-specific configuration
-*-private.conf
 *.local
 logstash.yml
+!logstash.yml.example
 
-# Use logstash.yml.example as template and copy to logstash.yml for deployment
+# Backup and temporary files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+*~
 
-# Deployment results and container artifacts  
-# No deployment artifacts, runtime data, or container state should be in repository
-# This ensures clean, portable, and secure deployments across environments
+# Build and compile artifacts
+build/
+dist/
+target/
+bin/
+out/
+.cache/
+node_modules/
+vendor/
 
-# Maintenance and cleanup scripts (not deployment scope)
+# Package manager files
+package-lock.json
+yarn.lock
+Pipfile.lock
+composer.lock
+go.sum
+
+# Maintenance, cleanup, and admin scripts (not for deployment)
 *cleanup*
 *maintenance*
+*admin*
+cleanup-*
+maintenance-*
 admin-*
+
+# Documentation and notes (personal)
+NOTES.md
+TODO.md
+CHANGELOG.md
+notes/
+docs/personal/
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform sensitive files
+.terraform.tfvars
+secret.tfvars
+prod.tfvars
+production.tfvars
 
