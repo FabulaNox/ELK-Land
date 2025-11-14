@@ -268,6 +268,55 @@ sudo netstat -tlnp | grep -E "(9200|5601|1514)"
 - **Logstash**: Adjust batch sizes and workers in pipeline config
 - **Kibana**: Enable caching and optimize queries
 
+## 🔒 Security & Development Guidelines
+
+### Repository Security
+
+This repository implements strict security practices to protect sensitive data and maintain clean deployments:
+
+#### Configuration File Security
+- **Sensitive files are excluded** via comprehensive `.gitignore`
+- **Template files** (`.example`, `.template`) are provided for guidance
+- **Production configurations** must be created locally from templates
+- **No credentials or sensitive data** should ever be committed
+
+#### File Categories (Automatically Excluded)
+```bash
+# Testing and development files
+test-*, *test*, debug-*, temp-*, scratch-*
+
+# Sensitive configuration files
+*.conf (except deployment-critical ones)
+*.key, *.pem, *.crt, *.p12 (cryptographic material)
+*-private.conf, *-secret.conf (private configurations)
+
+# Administrative scripts
+*cleanup*, *maintenance*, admin-*
+
+# Build and runtime artifacts
+data/, logs/, build/, node_modules/, vendor/
+```
+
+#### Development vs Production
+- **Development artifacts** (test files, debugging scripts, notes) are excluded
+- **Only deployment-essential files** are tracked in git
+- **Personal configurations** remain local to your environment
+- **Clean deployments** are ensured across all environments
+
+#### Best Practices
+1. **Never commit sensitive data** - Use example files and local copies
+2. **Use templates** - Copy `.example` files and customize locally  
+3. **Keep clean history** - Development artifacts should not enter git
+4. **Document changes** - Update examples when changing configurations
+5. **Test locally** - Validate changes before deployment
+
+### RouterOS Security
+When integrating with MikroTik RouterOS devices:
+- Use dedicated service accounts with minimal privileges
+- Enable log encryption in transit where possible
+- Filter sensitive log data before ingestion
+- Implement proper network segmentation for logging traffic
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
